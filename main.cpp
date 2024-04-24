@@ -1,10 +1,7 @@
 #include <iostream>
+#include <variant>
 
 using namespace std;
-
-enum class Type {
-	ptr, num
-};
 
 struct Node
 {
@@ -14,33 +11,25 @@ struct Node
 
 struct Entity {
 	string name;
-	Type t;
-	Value v;
+	variant<int, Node*> v;
 };
-
-union Value
-{
-	Node* p;
-	int i;
-};
-
 
 void PrintEntity(const Entity& e) {
-	if (e.t == Type::num) {
-		cout << e.v.i << std::endl;
+	if (holds_alternative<int>(e.v)) {
+		cout << get<int>(e.v) << std::endl;
 	}
 	else {
-		std::cout << e.v.p->data << std::endl;
+		std::cout << get<Node*>(e.v)->data << std::endl;
 	}
 }
 
 int main() {
-	Entity e_num{ "Sample Entity",Type::num };
-	e_num.v.i = 32;
+	Entity e_num{ "Sample Entity",32 };
 	PrintEntity(e_num);
 
 	Node* node = new Node{ 123, nullptr };
-	Entity e_ptr{ "Node Entity", Type::ptr };
-	e_ptr.v.p = node;
+	Entity e_ptr{ "Node Entity", node };
 	PrintEntity(e_ptr);
+
+	delete node;
 }
