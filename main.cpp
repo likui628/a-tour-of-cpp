@@ -23,6 +23,11 @@ void PrintEntity(const Entity& e) {
 	}
 }
 
+// the return type is "double"
+auto mul(int i, double d) -> double {
+	return i * d;
+}
+
 int main() {
 	Entity e_num{ "Sample Entity",32 };
 	PrintEntity(e_num);
@@ -32,4 +37,7 @@ int main() {
 	PrintEntity(e_ptr);
 
 	delete node;
+
+	auto mulRes=mul(3, 7);
+	std::cout << mulRes << std::endl;
 }
