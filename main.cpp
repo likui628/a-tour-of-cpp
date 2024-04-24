@@ -1,51 +1,46 @@
 #include <iostream>
-#include "Vector.h"
 
 using namespace std;
 
-double read_and_sum(int s) {
-	Vector v(s);
-	for (int i = 0; i < s; ++i) {
-		cin >> v[i];
-	}
-
-	double sum = 0;
-	for (int i = 0; i < s; ++i) {
-		sum += v[i];
-	}
-	return sum;
-}
-
-enum TrafficLight {
-	green, yellow, red
+enum class Type {
+	ptr, num
 };
 
-TrafficLight& operator++(TrafficLight& t) {
-	switch (t)
-	{
-	case red:
-		t = green;
-		break;
-	case green:
-		t = yellow;
-		break;
-	case yellow:
-		t = red;
-		break;
+struct Node
+{
+	int data;
+	Node* next;
+};
+
+struct Entity {
+	string name;
+	Type t;
+	Value v;
+};
+
+union Value
+{
+	Node* p;
+	int i;
+};
+
+
+void PrintEntity(const Entity& e) {
+	if (e.t == Type::num) {
+		cout << e.v.i << std::endl;
 	}
-	return t;
+	else {
+		std::cout << e.v.p->data << std::endl;
+	}
 }
 
 int main() {
-	//double sum = read_and_sum(10);
-	//cout << sum;
+	Entity e_num{ "Sample Entity",Type::num };
+	e_num.v.i = 32;
+	PrintEntity(e_num);
 
-	TrafficLight light = TrafficLight::red;
-	std::cout << light << std::endl;
-	++light;
-	std::cout << light << std::endl;
-	++light;
-	std::cout << light << std::endl;
-	++light;
-	std::cout << light << std::endl;
+	Node* node = new Node{ 123, nullptr };
+	Entity e_ptr{ "Node Entity", Type::ptr };
+	e_ptr.v.p = node;
+	PrintEntity(e_ptr);
 }
