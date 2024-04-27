@@ -1,22 +1,12 @@
 #include <iostream>
-#include <variant>
+#include "Vector.h"
 
 using namespace std;
 
-struct Entity {
-	string name;
-	int value;
-};
-
-Entity read_entity(istream& is) {
-	string name;
-	int value;
-	is >> name >> value;
-	return { name,value };
-}
-
-
 int main() {
-	auto [name, value] = read_entity(std::cin);
-	std::cout << name << " " << value << std::endl;
+	Vector v1 = { 1.23, 3.45, 6.7, 8 };    
+	for (int i = 0; i < v1.size(); ++i) {
+		std::cout << v1[i] << " ";
+	}
+	std::cout << std::endl;
 }
