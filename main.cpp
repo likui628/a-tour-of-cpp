@@ -2,11 +2,19 @@
 #include "Vector.h"
 
 using namespace std;
+using namespace std::literals::string_literals;
 
 int main() {
-	Vector v1 = { 1.23, 3.45, 6.7, 8 };    
-	for (int i = 0; i < v1.size(); ++i) {
-		std::cout << v1[i] << " ";
-	}
-	std::cout << std::endl;
+	string name = "Niels Stroustrup";
+
+
+	string s = name.substr(6, 10);            // s = "Stroustrup"
+	name.replace(0, 5, "nicholas1sss");          // name becomes "nicholas Stroustrup"
+	name[0] = toupper(name[0]);            // name becomes "Nicholas Stroustrup"
+	std::cout << name << std::endl;
+
+	auto cat = "Cat"s;
+
+	std::u8string utf = u8"ÄãºÃÖÐÎÄ£¡";
+	std::cout << reinterpret_cast<const char*>(utf.c_str()) << std::endl;
 }
