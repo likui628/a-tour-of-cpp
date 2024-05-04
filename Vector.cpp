@@ -1,65 +1,69 @@
 #include "Vector.h"
-#include <algorithm>
+#include <memory>
 
-Vector::Vector(int s) : elem{ new double[s] }, sz{ s } {}
-
-Vector::Vector(std::initializer_list<double> lst)
-	:elem{ new double[lst.size()] }, sz{ static_cast<int>(lst.size()) }
+template<typename T>
+Vector<T>::Vector() :elem{ nullptr }, space{ nullptr }, last{ nullptr }
 {
-	std::copy(lst.begin(), lst.end(), elem);
 }
 
-Vector::Vector(const Vector& other) :elem{ new double[other.sz] }, sz{ other.sz }
+template<typename T>
+Vector<T>::Vector(int n) : elem{ alloc.allocate(n) }, space{ elem + n }, last{ elem + n }
 {
-	for (int i = 0; i < other.sz; ++i) {
-		elem[i] = other[i];
+	for (T* p = elem; p != space; ++p) {
+		alloc.construct(p, T());
 	}
 }
 
-Vector::Vector(Vector&& other) noexcept :elem{ other.elem }, sz{ other.sz }
+template<typename T>
+Vector<T>::Vector(const Vector& other)
 {
-	other.elem = nullptr;
-	other.sz = 0;
 }
 
-Vector::~Vector()noexcept
+template<typename T>
+Vector<T>::Vector(Vector&& other) noexcept
 {
-	delete[] elem;
 }
 
-Vector& Vector::operator=(const Vector& other)
+template<typename T>
+Vector<T>::~Vector() noexcept
 {
-	double* p = new double[other.sz];
-	for (int i = 0; i < other.sz; ++i) {
-		p[i] = other[i];
-	}
-	delete[] elem;
-	elem = p;
-	sz = other.sz;
-	return *this;
 }
 
-Vector& Vector::operator=(Vector&& other) noexcept
+//template<typename T>
+//Vector& Vector<T>::operator=(const Vector& other)
+//{
+//	// TODO: insert return statement here
+//}
+//
+//template<typename T>
+//Vector& Vector<T>::operator=(Vector&& other) noexcept
+//{
+//	// TODO: insert return statement here
+//}
+
+template<typename T>
+int Vector<T>::size()
 {
-	if (this != &other) {
-		delete[] elem;
-		elem = other.elem;
-		sz = other.sz;
-		other.elem = nullptr;
-		other.sz = 0;
-	}
-	return *this;
+	return space - elem;
 }
 
-double& Vector::operator[](int i) {
-	return elem[i];
-}
-
-const double& Vector::operator[](int i) const
+template<typename T>
+int Vector<T>::capacity()
 {
-	return elem[i];
+	return last - elem;
 }
 
-int Vector::size() {
-	return sz;
+template<typename T>
+void Vector<T>::reserve(int sz)
+{
+}
+
+template<typename T>
+void Vector<T>::push_back(T& t)
+{
+}
+
+template<typename T>
+void Vector<T>::push_back(T&& t)
+{
 }
