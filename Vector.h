@@ -24,7 +24,7 @@ public:
 	size_t size()const;
 	size_t capacity()const;
 
-	void reserve(int newsz);
+	void reserve(size_t newsz);
 	void push_back(const T& t);
 	void push_back(T&& t);
 };
@@ -105,7 +105,7 @@ inline size_t Vector<T>::capacity() const
 }
 
 template<typename T>
-inline void Vector<T>::reserve(int newsz)
+inline void Vector<T>::reserve(size_t newsz)
 {
 	if (newsz > capacity()) {
 		T* newelem = alloc.allocate(newsz);
