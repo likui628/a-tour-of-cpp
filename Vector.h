@@ -19,7 +19,12 @@ public:
 
 	Vector& operator=(const Vector& other);
 	Vector& operator=(Vector&& other) noexcept;
+
 	T& operator[](int i);
+	const T& operator[](int i)const;
+
+	T& at(int i);
+	const T& at(int i)const;
 
 	size_t size()const;
 	size_t capacity()const;
@@ -93,6 +98,28 @@ inline T& Vector<T>::operator[](int i) {
 }
 
 template<typename T>
+inline const T& Vector<T>::operator[](int i) const
+{
+	return *(elem + i);
+}
+
+template<typename T>
+inline T& Vector<T>::at(int i)
+{
+	if (i < 0 || static_cast<size_t>(i) >= size())
+		throw std::out_of_range("Index out of range");
+	return *(elem + i);
+}
+
+template<typename T>
+inline const T& Vector<T>::at(int i) const
+{
+	if (i < 0 || static_cast<size_t>(i) >= size())
+		throw std::out_of_range("Index out of range");
+	return *(elem + i);
+}
+
+template<typename T>
 inline size_t Vector<T>::size()const
 {
 	return static_cast<size_t>(space - elem);
@@ -116,7 +143,9 @@ inline void Vector<T>::reserve(size_t newsz)
 
 		// Manually call the destructor for each object in the original array
 		for (T* p = elem; p != space; ++p) {
-			p->~T();
+			// p->~T();
+			// https://en.cppreference.com/w/cpp/memory/destroy_at
+			std::destroy_at(p);
 		}
 		// Deallocate the old space
 		alloc.deallocate(elem, last - elem);
@@ -135,7 +164,9 @@ inline void Vector<T>::push_back(const T& t)
 	}
 	// Use placement new to construct an object in allocated, uninitialized memory.
 	// https://en.cppreference.com/w/cpp/language/new#Placement_new
-	new (space)T(t);
+	// new (space)T(t);
+	// https://en.cppreference.com/w/cpp/memory/construct_at
+	std::construct_at(space, t);
 	++space;
 }
 
@@ -146,6 +177,7 @@ inline void Vector<T>::push_back(T&& t)
 		reserve(capacity() == 0 ? 8 : 2 * capacity());
 	}
 	// std::move is used to convert t into an rvalue, enabling the move constructor.
-	new (space) T(std::move(t));
+	// new (space) T(std::move(t));
+	std::construct_at(space, std::move(t));
 	++space;
 }
